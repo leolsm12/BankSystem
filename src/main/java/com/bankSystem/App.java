@@ -50,12 +50,21 @@ public class App {
 
         scanner.close();
     }
+    private static boolean isCpfValido(String cpf) {
+        return cpf != null && cpf.matches("\\d{11}");
+    }
 
     private static void abrirConta() {
         System.out.print("Nome do cliente: ");
         String nome = scanner.nextLine();
-        System.out.print("CPF do cliente: ");
-        String cpf = scanner.nextLine();
+        String cpf;
+        do {
+            System.out.print("CPF do cliente (apenas números, 11 dígitos): ");
+            cpf = scanner.nextLine();
+            if (!isCpfValido(cpf)) {
+                System.out.println("CPF inválido! Digite um CPF válido com 11 números.");
+            }
+        } while (!isCpfValido(cpf));
         System.out.print("Tipo de conta (corrente/poupanca): ");
         String tipo = scanner.nextLine();
 
