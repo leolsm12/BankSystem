@@ -4,6 +4,8 @@ package com.bankSystem.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContaTest {
@@ -18,35 +20,51 @@ class ContaTest {
     }
 
     @Test
-    void testDeposito() {
-        conta.depositar(100.0);
-        assertEquals(100.0, conta.getSaldo());
+    void deveDepositarCorretamente() {
+        conta.depositar(BigDecimal.valueOf(300));
+        assertEquals(BigDecimal.valueOf(300), conta.getSaldo());
+        assertEquals(1, conta.getHistorico().getTransacoes().size());
     }
 
     @Test
-    void testSaqueComSaldo() {
-        conta.depositar(200.0);
-        boolean resultado = conta.sacar(150.0);
-        assertTrue(resultado);
-        assertEquals(50.0, conta.getSaldo());
+    void deveLancarExcecaoAoDepositarValorNegativo() {
+        assertThrows(IllegalArgumentException.class, () ->
+                conta.depositar(BigDecimal.valueOf(-50))
+        );
     }
 
     @Test
-    void testSaqueSemSaldo() {
-        boolean resultado = conta.sacar(50.0);
-        assertFalse(resultado);
+    void deveSacarCorretamente() {
+        conta.depositar(BigDecimal.valueOf(500));
+        conta.sacar(BigDecimal.valueOf(200));
+        assertEquals(BigDecimal.valueOf(300), conta.getSaldo());
+        assertEquals(2, conta.getHistorico().getTransacoes().size());
     }
 
     @Test
-    void testTransferencia() {
-        Cliente outro = new Cliente("Maria", "98765432100");
-        Conta contaDestino = new ContaPoupanca(outro);
-
-        conta.depositar(300.0);
-        boolean resultado = conta.transferir(100.0, contaDestino);
-
-        assertTrue(resultado);
-        assertEquals(200.0, conta.getSaldo());
-        assertEquals(100.0, contaDestino.getSaldo());
+    void deveLancarExcecaoAoSacarSemSaldo() {
+        assertThrows(IllegalArgumentException.class, () ->
+                conta.sacar(BigDecimal.valueOf(100))
+        );
     }
+
+    @Test
+    void deveTransferirEntreContas() {
+        Conta destino = new ContaCorrente(new Cliente("Lucas", "98765432100"));
+        conta.depositar(BigDecimal.valueOf(1000));
+        conta.transferir(BigDecimal.valueOf(400), destino);
+
+        assertEquals(BigDecimal.valueOf(600), conta.getSaldo());
+        assertEquals(BigDecimal.valueOf(400), destino.getSaldo());
+        assertEquals(3, conta.getHistorico().getTransacoes().size());
+    }
+
+    @Test
+    void deveLancarExcecaoAoTransferirSemSaldo() {
+        Conta destino = new ContaCorrente(new Cliente("Lucas", "98765432100"));
+        assertThrows(IllegalArgumentException.class, () ->
+                conta.transferir(BigDecimal.valueOf(200), destino)
+        );
+    }
+
 }

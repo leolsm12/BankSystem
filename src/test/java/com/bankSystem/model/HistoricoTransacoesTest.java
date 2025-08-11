@@ -3,6 +3,7 @@ package com.bankSystem.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,23 +18,23 @@ public class HistoricoTransacoesTest {
 
     @Test
     void deveAdicionarTransacao() {
-        Transacao t = new Transacao(TipoTransacao.DEPOSITO, 200, "Depósito inicial");
+        Transacao t = new Transacao(TipoTransacao.DEPOSITO, BigDecimal.valueOf(200), "Depósito inicial");
         historico.adicionar(t);
 
         List<Transacao> transacoes = historico.getTransacoes();
         assertEquals(1, transacoes.size());
-        assertEquals(t, transacoes.get(0));
+        assertEquals(t, transacoes.getFirst());
     }
 
     @Test
     void listaDeTransacoesNaoPodeSerModificadaExternamente() {
-        Transacao t = new Transacao(TipoTransacao.SAQUE, 50, "Saque");
+        Transacao t = new Transacao(TipoTransacao.SAQUE, BigDecimal.valueOf(50), "Saque");
         historico.adicionar(t);
 
         List<Transacao> transacoes = historico.getTransacoes();
 
         assertThrows(UnsupportedOperationException.class, () -> {
-            transacoes.add(new Transacao(TipoTransacao.DEPOSITO, 10, "Hack"));
+            transacoes.add(new Transacao(TipoTransacao.DEPOSITO, BigDecimal.valueOf(10), "Hack"));
         });
     }
 }

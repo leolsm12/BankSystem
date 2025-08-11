@@ -2,44 +2,56 @@ package com.bankSystem.model;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+
 
 @Getter
 public class Conta {
     private static int SEQUENCIAL = 1;
 
-    protected int numero;
-    protected double saldo;
+    protected String numeroConta;
+    protected BigDecimal saldo;
     protected Cliente cliente;
-    protected List<String> historico = new ArrayList<>();
+    protected HistoricoTransacoes historico;
+
 
     public Conta(Cliente cliente) {
-        this.numero = SEQUENCIAL++;
         this.cliente = cliente;
+        this.saldo = BigDecimal.ZERO;
+        this.historico = new HistoricoTransacoes();
+        this.numeroConta = gerarNumeroConta();
     }
 
-    public void depositar(double valor) {
-        saldo += valor;
-        historico.add("Depósito: R$" + valor);
+    protected String gerarNumeroConta() {
+        return "AC" + System.currentTimeMillis(); // Gera um número de conta único baseado no timestamp atual
     }
 
-    public boolean sacar(double valor) {
-        if (saldo >= valor) {
-            saldo -= valor;
-            historico.add("Saque: R$" + valor);
-            return true;
+    public void depositar(BigDecimal valor) {
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor do depósito deve ser positivo");
         }
-        return false;
+
+        saldo = saldo.add(valor);
+        historico.adicionar(new Transacao(TipoTransacao.DEPOSITO, valor, "Depósito realizado"));
     }
 
-    public boolean transferir(double valor, Conta destino) {
-        if (this.sacar(valor)) {
-            destino.depositar(valor);
-            historico.add("Transferência para conta " + destino.numero + ": R$" + valor);
-            return true;
+    public void sacar(BigDecimal valor) {
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor do saque deve ser positivo");
         }
-        return false;
+
+        if (valor.compareTo(saldo) > 0) {
+            throw new IllegalArgumentException("Saldo insuficiente para saque");
+        }
+
+        saldo = saldo.subtract(valor);
+        historico.adicionar(new Transacao(TipoTransacao.SAQUE, valor, "Saque realizado"));
+    }
+
+    public void transferir(BigDecimal valor, Conta destino) {
+        this.sacar(valor);
+        destino.depositar(valor);
+        historico.adicionar(new Transacao(TipoTransacao.TRANSFERENCIA, valor, "Transferência para " + destino.getNumeroConta()));
     }
 
     public String getTipo() {
@@ -48,7 +60,7 @@ public class Conta {
 
     public void exibirExtrato() {
         System.out.println("Extrato da Conta " + getTipo());
-        for (String evento : historico) {
+        for (Transacao evento : historico.getTransacoes()) {
             System.out.println(" - " + evento);
         }
         System.out.println("Saldo atual: R$" + saldo);
