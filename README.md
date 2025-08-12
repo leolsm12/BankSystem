@@ -5,7 +5,7 @@
 ![Coverage](https://img.shields.io/badge/coverage-85%25-yellowgreen)
 
 
-Sistema bancário básico desenvolvido em Java que simula operações como abertura de conta, depósitos, saques, transferências via PIX e acompanhamento do histórico de transações.
+Sistema bancário básico desenvolvido em Java que simula operações como abertura de conta, depósitos, saques, transferências e acompanhamento do histórico de transações.
 
 ---
 
