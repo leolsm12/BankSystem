@@ -1,7 +1,7 @@
 # BankSystem
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Java Version](https://img.shields.io/badge/java-17-blue)
+![Java Version](https://img.shields.io/badge/java-21-blue)
 ![Coverage](https://img.shields.io/badge/coverage-85%25-yellowgreen)
 
 
@@ -46,7 +46,7 @@ Além disso, o sistema utiliza um repositório em memória para simular persist�
 
 ## Tecnologias Utilizadas
 
-- Java 17
+- Java 21
 - Maven
 - JUnit 5 para testes unitários
 - Lombok para geração automática de getters/setters e construtores
@@ -57,7 +57,7 @@ Além disso, o sistema utiliza um repositório em memória para simular persist�
 
 ## Requisitos
 
-- JDK 17 ou superior
+- JDK 21 
 - Maven instalado
 - IDE recomendada: IntelliJ IDEA (mas qualquer IDE Java serve)
 
@@ -147,7 +147,7 @@ src/
 
 ### Pré-requisitos para rodar os testes
 
-- **Java 17+** instalado e configurado no PATH.
+- **Java 21** instalado e configurado no PATH.
 - **Apache Maven** instalado ([Guia de instalação](https://maven.apache.org/install.html)).
 
 Para verificar se está tudo instalado corretamente:
